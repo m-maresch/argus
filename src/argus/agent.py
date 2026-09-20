@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 
 from browse import browse
 from extract import extract
-from telegram import send_telegram_message
+from store import upsert
+from telegram import is_telegram_enabled, send_telegram_message
 
 load_dotenv()
 
@@ -19,4 +20,7 @@ async def argus_agent(urls, user_prompt):
             extracted = extract(user_prompt, result)
             logging.info(f"Extracted: {extracted}")
 
-            send_telegram_message(result)
+            records_changed = await upsert(url, extracted.records)
+
+            if records_changed and is_telegram_enabled():
+                send_telegram_message(result)

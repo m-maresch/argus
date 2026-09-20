@@ -1,0 +1,7 @@
+browser-use==0.13.7
+celery==5.6.3
+langchain==1.3.15
+langchain-google-genai==4.3.4
+pydantic==2.12.5
+python-dotenv==1.2.2
+requests==2.33.0

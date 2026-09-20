@@ -5,7 +5,7 @@ from celery import Celery
 from agent import argus_agent
 from load import load_user_prompt
 
-app = Celery("argus", broker="redis://localhost:6379")
+app = Celery("argus", broker="redis://localhost:6379/0")
 
 
 @app.task

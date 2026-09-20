@@ -19,7 +19,7 @@ EXTRACTION_INSTRUCTIONS = """
 You are an expert data extraction engine.
 INSTRUCTIONS:
 1. Analyze the user's task to determine what data attributes they implicitly want to collect.
-2. Define these attributes as snake_case strings in 'inferred_fields'.
+2. Define these attributes as snake_case strings in 'inferred_fields'. In addition, always include an 'id' attribute.
 3. Parse the provided result, extract all relevant items, and map them into dictionaries inside the 'records' list using those exact inferred keys.
 """
 
