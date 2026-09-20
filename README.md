@@ -19,22 +19,32 @@ Argus is an intelligent web scraping and data extraction system that leverages a
 ## Architecture
 
 ```
-User (submit.sh)
-         ↓
-   Redis Broker
-  (Celery Queue)
+User
+  ↓
+submit.sh
+  ↓
+Celery task submission
+  ↓
+Redis Broker (Celery queue)
          ↓
    Worker Process
          ↓
-      agent
+      Argus Agent
          ↓
       browse ──→ Browser Agent ──→ Web Content
          ↓                            ↓
-      extract ──→ Gemini AI ──→ Structured Data
+      extract ──→ Gemini AI ─────→ Records
          ↓                            ↓
-      upsert ──→ Redis Storage ─────→ Records
+      upsert ────────────────────→ Redis Storage
          ↓
-      Telegram ─────────────────────→ Notification
+   Compare record IDs
+         ↓
+      IDs changed?
+       ╱       ╲
+     Yes        No
+      ↓          ↓
+Telegram       No notification
+(optional)
 ```
 
 ## Prerequisites
@@ -156,7 +166,7 @@ Argus is designed to run on a server with scheduled job submissions via cron. On
 1. **User submits URL** via `submit.sh` → Celery enqueues task
 2. **Worker picks up task**
 3. **Agent executes**:
-   - **Browse**: Autonomous agent navigates the URL using natural language prompt
+   - **Browse**: Browser agent navigates the URL using natural language prompt
    - **Extract**: LLM parses browser results and extracts records
    - **Store**: Extracted records are saved to Redis with URL-based keys. Records are identified by their `id` field; IDs no longer present in a later result are removed.
    - **Notify**: Telegram is notified only when the set of record IDs for a URL changes. Changes to other fields on an existing record do not trigger a notification.
